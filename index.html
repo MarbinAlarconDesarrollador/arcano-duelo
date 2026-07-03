@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#05030a">
+<meta name="description" content="Duelo de cartas de combate estilo Super Trunfo, 1 vs 1 en línea vía P2P.">
+<title>Arcano Duelo — Cartas de Combate</title>
+
+<!-- PWA: manifiesto e iconos -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Arcano Duelo">
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg-void:#05030a;
+    --bg-panel:#120a24;
+    --bg-panel-2:#1a0f30;
+    --line:#3a2a5c;
+    --cyan:#00fff2;
+    --magenta:#ff2e88;
+    --gold:#ffcc33;
+    --text:#f2ecff;
+    --text-dim:#9a8fc2;
+    --danger:#ff3b5c;
+    --ok:#33ffb0;
+    --radius:14px;
+    --font-display:'Cinzel Decorative', serif;
+    --font-mono:'Share Tech Mono', monospace;
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    min-height:100vh;
+    min-height:100dvh;
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(255,46,136,.16), transparent 45%),
+      radial-gradient(ellipse at 100% 10%, rgba(0,255,242,.14), transparent 45%),
+      repeating-linear-gradient(120deg, rgba(255,255,255,.02) 0 2px, transparent 2px 42px),
+      var(--bg-void);
+    color:var(--text);
+    font-family:var(--font-mono);
+    overflow-x:hidden;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  #app{
+    max-width:520px;
+    margin:0 auto;
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+    padding:18px 16px 28px;
+  }
+
+  .screen{display:none; flex:1; flex-direction:column; animation:fadeIn .35s ease;}
+  .screen.active{display:flex;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  h1,h2,h3{font-family:var(--font-display); margin:0; letter-spacing:.5px;}
+
+  .logo{
+    text-align:center;
+    margin:10px 0 26px;
+  }
+  .logo h1{
+    font-size:clamp(30px,8vw,42px);
+    background:linear-gradient(90deg,var(--cyan),var(--magenta) 55%,var(--gold));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 0 30px rgba(0,255,242,.25);
+  }
+  .logo p{color:var(--text-dim); font-size:12px; letter-spacing:3px; text-transform:uppercase; margin-top:4px;}
+
+  /* ---------- botones / inputs ---------- */
+  .btn{
+    font-family:var(--font-mono);
+    font-size:15px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--text);
+    background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0));
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 18px;
+    cursor:pointer;
+    transition:transform .12s ease, box-shadow .2s ease, border-color .2s ease;
+    -webkit-user-select:none; user-select:none;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{
+    border-color:var(--cyan);
+    box-shadow:0 0 0 1px rgba(0,255,242,.2) inset, 0 0 18px rgba(0,255,242,.25);
+  }
+  .btn-primary:hover{box-shadow:0 0 0 1px rgba(0,255,242,.4) inset, 0 0 28px rgba(0,255,242,.4);}
+  .btn-accent{
+    border-color:var(--magenta);
+    box-shadow:0 0 0 1px rgba(255,46,136,.2) inset, 0 0 18px rgba(255,46,136,.25);
+  }
+  .btn-accent:hover{box-shadow:0 0 0 1px rgba(255,46,136,.4) inset, 0 0 28px rgba(255,46,136,.4);}
+  .btn-ghost{background:transparent; border-color:var(--line); color:var(--text-dim);}
+  .btn:disabled{opacity:.35; cursor:not-allowed; filter:grayscale(.4);}
+  .btn-block{width:100%;}
+
+  input[type=text]{
+    font-family:var(--font-mono);
+    font-size:16px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--text);
+    background:rgba(255,255,255,.03);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    width:100%;
+    outline:none;
+    text-align:center;
+  }
+  input[type=text]:focus{border-color:var(--cyan); box-shadow:0 0 0 3px rgba(0,255,242,.12);}
+
+  /* ---------- panel / card container ---------- */
+  .panel{
+    background:linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:20px;
+    position:relative;
+    overflow:hidden;
+  }
+  .panel::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      linear-gradient(115deg, transparent 40%, rgba(0,255,242,.06) 50%, transparent 60%);
+    pointer-events:none;
+  }
+
+  .stack{display:flex; flex-direction:column; gap:14px;}
+  .row{display:flex; gap:10px;}
+  .center{text-align:center;}
+  .muted{color:var(--text-dim); font-size:13px; line-height:1.5;}
+  .divider{
+    display:flex; align-items:center; gap:10px; color:var(--text-dim); font-size:11px;
+    letter-spacing:2px; margin:6px 0; text-transform:uppercase;
+  }
+  .divider::before,.divider::after{content:""; flex:1; height:1px; background:var(--line);}
+
+  /* ---------- lobby ---------- */
+  #screen-lobby{justify-content:center; gap:18px;}
+  .mode-card{cursor:pointer;}
+  .mode-card h3{font-size:16px; color:var(--cyan); margin-bottom:6px; letter-spacing:1px;}
+  .code-display{
+    font-family:var(--font-mono);
+    font-size:clamp(22px,7vw,30px);
+    letter-spacing:6px;
+    text-align:center;
+    color:var(--gold);
+    background:rgba(255,204,51,.06);
+    border:1px dashed rgba(255,204,51,.5);
+    border-radius:10px;
+    padding:16px 10px;
+    word-break:break-all;
+    text-shadow:0 0 18px rgba(255,204,51,.5);
+  }
+
+  .spinner{
+    width:34px; height:34px; margin:14px auto 4px;
+    border-radius:50%;
+    border:3px solid rgba(0,255,242,.15);
+    border-top-color:var(--cyan);
+    animation:spin 1s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ---------- juego ---------- */
+  #screen-game{gap:14px;}
+
+  .hud{
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:12px; color:var(--text-dim); letter-spacing:1px;
+  }
+  .hud b{color:var(--text); font-family:var(--font-display); font-size:14px;}
+  .pill{
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(255,255,255,.04); border:1px solid var(--line);
+    border-radius:999px; padding:5px 12px; font-size:11px;
+  }
+  .dot{width:7px; height:7px; border-radius:50%; background:var(--ok); box-shadow:0 0 8px var(--ok);}
+
+  .turn-banner{
+    text-align:center; font-family:var(--font-display); font-size:15px;
+    padding:10px; border-radius:10px; border:1px solid var(--line);
+    background:rgba(255,255,255,.03);
+    transition:all .3s ease;
+  }
+  .turn-banner.mine{border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 20px rgba(0,255,242,.18) inset;}
+  .turn-banner.theirs{border-color:var(--magenta); color:var(--magenta); box-shadow:0 0 20px rgba(255,46,136,.15) inset;}
+
+  .arena{display:flex; gap:10px; align-items:stretch;}
+  .vs{
+    align-self:center; font-family:var(--font-display); font-size:18px; color:var(--gold);
+    text-shadow:0 0 14px rgba(255,204,51,.6);
+    flex:0 0 auto; width:28px; text-align:center;
+  }
+
+  /* ---------- carta 3D ---------- */
+  .card-wrap{flex:1; perspective:900px;}
+  .card{
+    position:relative;
+    border-radius:16px;
+    padding:14px;
+    min-height:230px;
+    display:flex; flex-direction:column; justify-content:space-between;
+    transform-style:preserve-3d;
+    transform:rotateY(0deg);
+    transition:transform .6s cubic-bezier(.2,.9,.25,1), box-shadow .3s ease;
+    background:
+      radial-gradient(circle at 30% 0%, rgba(255,255,255,.08), transparent 55%),
+      linear-gradient(160deg, #1c1030, #0b0716 70%);
+    border:1px solid var(--el-color, var(--cyan));
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.03) inset,
+      0 10px 30px -8px rgba(0,0,0,.7),
+      0 0 26px -4px var(--el-color, var(--cyan));
+    animation:float 4.5s ease-in-out infinite;
+  }
+  @keyframes float{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-4px);} }
+  .card.flat{animation:none;}
+  .card.facedown{
+    display:flex; align-items:center; justify-content:center;
+    background:
+      repeating-linear-gradient(45deg, rgba(0,255,242,.05) 0 8px, rgba(255,46,136,.05) 8px 16px),
+      linear-gradient(160deg,#150c26,#0a0614);
+  }
+  .card.facedown .rune{
+    font-size:40px; opacity:.55; color:var(--cyan); text-shadow:0 0 20px var(--cyan);
+  }
+
+  .card .el-tag{
+    font-size:9px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--el-color, var(--cyan));
+    border:1px solid var(--el-color, var(--cyan));
+    display:inline-block; padding:3px 8px; border-radius:999px; align-self:flex-start;
+  }
+  .card .card-name{
+    font-family:var(--font-display); font-size:15px; line-height:1.2; margin:10px 0 6px;
+    color:var(--text);
+  }
+  .card .card-glyph{font-size:26px; text-align:center; margin:2px 0 8px; filter:drop-shadow(0 0 8px var(--el-color));}
+
+  .stats{display:flex; flex-direction:column; gap:6px;}
+  .stat-row{
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:12px; padding:5px 8px; border-radius:6px;
+    background:rgba(255,255,255,.03); border:1px solid transparent;
+  }
+  .stat-row .k{color:var(--text-dim); letter-spacing:1px;}
+  .stat-row .v{font-weight:bold; color:var(--text);}
+  .stat-row.clickable{cursor:pointer; border-color:var(--line);}
+  .stat-row.clickable:active{transform:scale(.97);}
+  .stat-row.pickable{border-color:var(--gold); box-shadow:0 0 10px rgba(255,204,51,.25);}
+  .stat-row.win{border-color:var(--ok); background:rgba(51,255,176,.08); box-shadow:0 0 14px rgba(51,255,176,.35);}
+  .stat-row.lose{border-color:var(--danger); background:rgba(255,59,92,.08); opacity:.7;}
+  .stat-row.chosen{border-color:var(--gold); box-shadow:0 0 14px rgba(255,204,51,.4);}
+
+  .log-box{
+    min-height:40px; font-size:12.5px; color:var(--text-dim); text-align:center;
+    padding:10px 8px; border-radius:10px; border:1px solid var(--line); background:rgba(255,255,255,.02);
+    line-height:1.5;
+  }
+  .log-box b{color:var(--gold);}
+
+  .pot-tag{
+    text-align:center; font-size:11px; color:var(--magenta); letter-spacing:1px;
+    text-transform:uppercase;
+  }
+
+  /* ---------- gameover ---------- */
+  #screen-gameover{justify-content:center; align-items:center; text-align:center; gap:16px;}
+  .trophy{font-size:56px; filter:drop-shadow(0 0 24px var(--gold));}
+  #go-title{font-size:clamp(24px,7vw,32px);}
+  #go-title.win{color:var(--ok); text-shadow:0 0 24px rgba(51,255,176,.5);}
+  #go-title.lose{color:var(--danger); text-shadow:0 0 24px rgba(255,59,92,.5);}
+
+  footer.hint{margin-top:14px; text-align:center; font-size:10.5px; color:var(--text-dim); letter-spacing:1px;}
+
+  .hidden{display:none !important;}
+
+  /* toasts */
+  #toast{
+    position:fixed; left:50%; bottom:24px; transform:translate(-50%, 20px);
+    background:var(--bg-panel); border:1px solid var(--cyan); color:var(--text);
+    padding:10px 16px; border-radius:10px; font-size:13px; opacity:0; pointer-events:none;
+    transition:all .3s ease; z-index:50; max-width:88vw; text-align:center;
+  }
+  #toast.show{opacity:1; transform:translate(-50%, 0);}
+
+  @media (min-width:640px){
+    .card{min-height:270px;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="logo">
+    <h1>ARCANO DUELO</h1>
+    <p>Duelo de cartas &middot; P2P</p>
+  </div>
+
+  <!-- ===================== LOBBY ===================== -->
+  <section id="screen-lobby" class="screen active">
+    <div class="panel mode-card" id="btn-goto-host">
+      <h3>⚔ Crear partida</h3>
+      <p class="muted">Genera un código y compártelo con tu rival para que se una.</p>
+    </div>
+
+    <div class="divider">o</div>
+
+    <div class="panel mode-card">
+      <h3>🔗 Unirse a partida</h3>
+      <p class="muted">Ingresa el código que te compartió tu rival.</p>
+      <div class="stack" style="margin-top:12px;">
+        <input type="text" id="input-join-code" placeholder="CÓDIGO" maxlength="8">
+        <button class="btn btn-accent btn-block" id="btn-join">Unirme al duelo</button>
+      </div>
+    </div>
+
+    <p class="muted center" style="margin-top:6px;">Se necesita conexión a internet para emparejar con tu rival.</p>
+  </section>
+
+  <!-- ===================== ESPERANDO ===================== -->
+  <section id="screen-waiting" class="screen">
+    <div class="panel stack center" style="margin:auto 0;">
+      <h3 id="waiting-title">Creando sala...</h3>
+      <div id="waiting-code-block" class="hidden">
+        <p class="muted">Comparte este código con tu rival:</p>
+        <div class="code-display" id="host-code">------</div>
+        <button class="btn btn-ghost btn-block" id="btn-copy-code" style="margin-top:10px;">📋 Copiar código</button>
+      </div>
+      <div class="spinner"></div>
+      <p class="muted" id="waiting-status">Esperando conexión del rival…</p>
+      <button class="btn btn-ghost btn-block" id="btn-cancel-wait">Cancelar</button>
+    </div>
+  </section>
+
+  <!-- ===================== JUEGO ===================== -->
+  <section id="screen-game" class="screen">
+    <div class="hud">
+      <span class="pill"><span class="dot"></span> Tú: <b id="hud-my-count">0</b></span>
+      <span class="pill">Rival: <b id="hud-opp-count">0</b></span>
+    </div>
+
+    <div id="turn-banner" class="turn-banner">Repartiendo cartas…</div>
+
+    <div class="arena">
+      <div class="card-wrap">
+        <div class="card" id="card-mine">
+          <span class="el-tag">—</span>
+          <div class="card-glyph">🂠</div>
+          <div class="card-name">—</div>
+          <div class="stats" id="stats-mine"></div>
+        </div>
+      </div>
+      <div class="vs">VS</div>
+      <div class="card-wrap">
+        <div class="card facedown" id="card-opp">
+          <span class="rune">✦</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pot-tag hidden" id="pot-tag"></div>
+
+    <div class="log-box" id="log-box">El duelo va a comenzar…</div>
+
+    <button class="btn btn-ghost btn-block hidden" id="btn-leave-game">Abandonar duelo</button>
+  </section>
+
+  <!-- ===================== FIN DE PARTIDA ===================== -->
+  <section id="screen-gameover" class="screen">
+    <div class="trophy" id="go-trophy">🏆</div>
+    <h2 id="go-title">—</h2>
+    <p class="muted" id="go-sub">—</p>
+    <div class="stack" style="width:100%; max-width:280px;">
+      <button class="btn btn-primary btn-block" id="btn-rematch">↻ Jugar otra vez</button>
+      <button class="btn btn-ghost btn-block" id="btn-back-lobby">Volver al inicio</button>
+    </div>
+  </section>
+
+  <footer class="hint">Diseñado para instalarse como app · funciona con PeerJS</footer>
+</div>
+
+<div id="toast"></div>
+
+<!-- PeerJS: única librería externa, necesaria para la conexión P2P entre jugadores -->
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
+<script>
+/* =========================================================================
+   ARCANO DUELO — lógica del juego
+   ========================================================================= */
+
+const STAT_KEYS = ["ataque","defensa","velocidad","magia"];
+const STAT_LABELS = {ataque:"⚔ Ataque", defensa:"🛡 Defensa", velocidad:"⚡ Velocidad", magia:"✨ Magia"};
+
+const ELEMENTS = [
+  {key:"fuego",  color:"#ff5a3c", glyph:"🔥"},
+  {key:"hielo",  color:"#3cd2ff", glyph:"❄️"},
+  {key:"sombra", color:"#a463ff", glyph:"🌑"},
+  {key:"luz",    color:"#ffe66d", glyph:"☀️"},
+];
+
+const NAME_PREFIX = ["Draco","Vex","Umbra","Astra","Pyra","Kron","Nyx","Zar","Fenris","Sylas",
+  "Morrigan","Thalos","Grim","Ember","Volt","Ossian","Rhea","Balor","Vireo","Talon"];
+const NAME_SUFFIX = ["Guardián","Espectro","Devorador","Centinela","Furia","Sombra","Titán",
+  "Cazador","Heraldo","Verdugo","Custodio","Vórtice","Ancestro","Segador","Aullador","Susurro",
+  "Fragmento","Portador","Colmillo","Reliquia"];
+
+function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function createDeck(){
+  const deck = [];
+  const usedNames = new Set();
+  for(let i=0;i<40;i++){
+    let name;
+    do{
+      name = NAME_PREFIX[randInt(0,NAME_PREFIX.length-1)] + " " + NAME_SUFFIX[randInt(0,NAME_SUFFIX.length-1)];
+    }while(usedNames.has(name));
+    usedNames.add(name);
+
+    const el = ELEMENTS[i % ELEMENTS.length];
+
+    // estadísticas balanceadas: suma total similar entre cartas, valores 15-98
+    const stats = {};
+    STAT_KEYS.forEach(k => stats[k] = randInt(15,98));
+
+    deck.push({
+      id: "c"+i+"_"+Math.random().toString(36).slice(2,7),
+      name, element: el.key, color: el.color, glyph: el.glyph,
+      stats
+    });
+  }
+  return deck;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Estado de red                                                          */
+/* ---------------------------------------------------------------------- */
+let peer = null;
+let conn = null;
+let role = null;       // 'host' | 'guest'
+let game = null;       // estado autoritativo (host) o copia recibida (guest)
+let hostCode = null;
+
+const $ = id => document.getElementById(id);
+
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  $(id).classList.add("active");
+}
+
+function toast(msg){
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>t.classList.remove("show"), 2400);
+}
+
+function randomCode(len=5){
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // sin caracteres ambiguos
+  let s = "";
+  for(let i=0;i<len;i++) s += chars[randInt(0,chars.length-1)];
+  return "AD-"+s;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Crear partida (host)                                                   */
+/* ---------------------------------------------------------------------- */
+function startHostFlow(){
+  showScreen("screen-waiting");
+  $("waiting-title").textContent = "Creando sala…";
+  $("waiting-code-block").classList.add("hidden");
+  $("waiting-status").textContent = "Generando código de sala…";
+
+  attemptCreatePeer(0);
+}
+
+function attemptCreatePeer(tries){
+  if(tries > 5){
+    $("waiting-status").textContent = "No se pudo crear la sala. Revisa tu conexión e inténtalo de nuevo.";
+    return;
+  }
+  const code = randomCode();
+  if(peer){ try{peer.destroy();}catch(e){} }
+  peer = new Peer(code, { debug: 0 });
+
+  peer.on("open", (id) => {
+    hostCode = id;
+    role = "host";
+    $("host-code").textContent = id;
+    $("waiting-code-block").classList.remove("hidden");
+    $("waiting-title").textContent = "Sala creada";
+    $("waiting-status").textContent = "Esperando conexión del rival…";
+  });
+
+  peer.on("connection", (c) => {
+    conn = c;
+    setupHostConnection();
+  });
+
+  peer.on("error", (err) => {
+    if(err && err.type === "unavailable-id"){
+      attemptCreatePeer(tries+1);
+    } else {
+      toast("Error de conexión: " + (err && err.type ? err.type : "desconocido"));
+    }
+  });
+}
+
+function setupHostConnection(){
+  conn.on("open", () => {
+    toast("¡Rival conectado!");
+    beginNewGame(); // host arma el mazo y reparte
+  });
+  conn.on("data", (msg) => handleHostMessage(msg));
+  conn.on("close", () => onOpponentLeft());
+  conn.on("error", () => onOpponentLeft());
+}
+
+/* ---------------------------------------------------------------------- */
+/* Unirse a partida (guest)                                               */
+/* ---------------------------------------------------------------------- */
+function startJoinFlow(){
+  const codeRaw = $("input-join-code").value.trim().toUpperCase();
+  if(!codeRaw){ toast("Ingresa un código válido"); return; }
+  const code = codeRaw.startsWith("AD-") ? codeRaw : "AD-"+codeRaw.replace(/^AD-?/,"");
+
+  showScreen("screen-waiting");
+  $("waiting-title").textContent = "Conectando…";
+  $("waiting-code-block").classList.add("hidden");
+  $("waiting-status").textContent = "Buscando la sala "+code+"…";
+
+  role = "guest";
+  if(peer){ try{peer.destroy();}catch(e){} }
+  peer = new Peer(undefined, { debug: 0 });
+
+  peer.on("open", () => {
+    conn = peer.connect(code, {reliable:true});
+    setupGuestConnection(code);
+  });
+
+  peer.on("error", (err) => {
+    $("waiting-status").textContent = "No se encontró la sala. Verifica el código.";
+    toast("Error: " + (err && err.type ? err.type : "no se pudo conectar"));
+  });
+}
+
+function setupGuestConnection(code){
+  conn.on("open", () => {
+    $("waiting-status").textContent = "Conectado. Esperando que el anfitrión reparta las cartas…";
+  });
+  conn.on("data", (msg) => handleGuestMessage(msg));
+  conn.on("close", () => onOpponentLeft());
+  conn.on("error", () => {
+    $("waiting-status").textContent = "No se encontró la sala. Verifica el código.";
+  });
+}
+
+function onOpponentLeft(){
+  if(document.getElementById("screen-gameover").classList.contains("active")) return;
+  toast("El rival se desconectó");
+  resetToLobby();
+}
+
+/* ---------------------------------------------------------------------- */
+/* Lógica de partida — el HOST es autoridad                               */
+/* ---------------------------------------------------------------------- */
+function beginNewGame(){
+  const deck = shuffle(createDeck());
+  const half = deck.length/2;
+  game = {
+    hostHand: deck.slice(0, half),
+    guestHand: deck.slice(half),
+    turn: Math.random() < 0.5 ? "host" : "guest",
+    pot: [],
+    hostCurrent: null,
+    guestCurrent: null,
+    phase: "choosing",
+    log: "¡El duelo comienza! Cada jugador tiene "+half+" cartas.",
+    winner: null
+  };
+  hostStartRound();
+  sendState();
+  renderGame();
+  showScreen("screen-game");
+}
+
+function hostStartRound(){
+  if(game.hostHand.length === 0 || game.guestHand.length === 0){
+    finishGame();
+    return;
+  }
+  game.hostCurrent = game.hostHand[0];
+  game.guestCurrent = game.guestHand[0];
+  game.phase = "choosing";
+}
+
+function finishGame(){
+  game.phase = "gameover";
+  game.winner = game.hostHand.length > 0 ? "host" : "guest";
+}
+
+function hostResolveChoice(stat){
+  if(role !== "host") return;
+  if(game.phase !== "choosing") return;
+  const chooser = game.turn;
+
+  const hVal = game.hostCurrent.stats[stat];
+  const gVal = game.guestCurrent.stats[stat];
+
+  const roundCards = [game.hostCurrent, game.guestCurrent, ...game.pot];
+  game.hostHand.shift();
+  game.guestHand.shift();
+
+  let roundWinner;
+  if(hVal === gVal){
+    roundWinner = "tie";
+    game.pot = roundCards;
+    game.log = STAT_LABELS[stat]+": "+hVal+" vs "+gVal+" → ¡EMPATE! "+roundCards.length+" cartas quedan en juego.";
+  } else {
+    roundWinner = hVal > gVal ? "host" : "guest";
+    game.pot = [];
+    if(roundWinner === "host"){
+      game.hostHand.push(...roundCards);
+    } else {
+      game.guestHand.push(...roundCards);
+    }
+    const whoLabel = roundWinner === chooser ? "¡Ganas la ronda!" : "El rival gana la ronda…";
+    game.log = STAT_LABELS[stat]+": "+hVal+" vs "+gVal+" → "+whoLabel+" (+"+roundCards.length+" cartas)";
+  }
+
+  game.phase = "resolved";
+  game.lastStat = stat;
+  game.roundWinner = roundWinner;
+  game.chooser = chooser;
+
+  sendState();
+  renderGame();
+
+  // tras una pausa para mostrar el resultado, se decide el siguiente turno
+  setTimeout(() => {
+    if(game.hostHand.length === 0 || game.guestHand.length === 0){
+      finishGame();
+    } else {
+      game.turn = roundWinner === "tie" ? chooser : roundWinner;
+      hostStartRound();
+    }
+    sendState();
+    renderGame();
+    if(game.phase === "gameover") showGameOver();
+  }, 2200);
+}
+
+function chooseStat(stat){
+  if(!game || game.phase !== "choosing") return;
+  if(game.turn !== role) return;
+
+  if(role === "host"){
+    hostResolveChoice(stat);
+  } else {
+    conn.send({type:"chooseStat", stat});
+  }
+}
+
+/* --- mensajería --- */
+function sendState(){
+  if(conn && conn.open){
+    conn.send({type:"state", game});
+  }
+}
+
+function handleHostMessage(msg){
+  if(!msg || !msg.type) return;
+  if(msg.type === "chooseStat" && game && game.turn === "guest"){
+    hostResolveChoice(msg.stat);
+  } else if(msg.type === "rematchRequest"){
+    beginNewGame();
+  } else if(msg.type === "leave"){
+    onOpponentLeft();
+  }
+}
+
+function handleGuestMessage(msg){
+  if(!msg || !msg.type) return;
+  if(msg.type === "state"){
+    game = msg.game;
+    renderGame();
+    if(document.getElementById("screen-waiting").classList.contains("active")){
+      showScreen("screen-game");
+    }
+    if(game.phase === "gameover"){
+      showGameOver();
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Render                                                                  */
+/* ---------------------------------------------------------------------- */
+function renderGame(){
+  if(!game) return;
+  const myHand   = role === "host" ? game.hostHand : game.guestHand;
+  const oppHand  = role === "host" ? game.guestHand : game.hostHand;
+  const myCard   = role === "host" ? game.hostCurrent : game.guestCurrent;
+  const oppCard  = role === "host" ? game.guestCurrent : game.hostCurrent;
+
+  $("hud-my-count").textContent = myHand.length;
+  $("hud-opp-count").textContent = oppHand.length;
+
+  const potInfo = $("pot-tag");
+  if(game.pot && game.pot.length){
+    potInfo.textContent = "🔥 "+game.pot.length+" cartas en juego por el empate";
+    potInfo.classList.remove("hidden");
+  } else {
+    potInfo.classList.add("hidden");
+  }
+
+  // banner de turno
+  const banner = $("turn-banner");
+  const isMyTurn = game.turn === role && game.phase === "choosing";
+  banner.classList.remove("mine","theirs");
+  if(game.phase === "gameover"){
+    banner.textContent = "Duelo finalizado";
+  } else if(isMyTurn){
+    banner.textContent = "🎯 Tu turno — elige un atributo";
+    banner.classList.add("mine");
+  } else {
+    banner.textContent = "⌛ Turno del rival…";
+    banner.classList.add("theirs");
+  }
+
+  // carta propia
+  const elMine = ELEMENTS.find(e=>e.key === (myCard && myCard.element)) || ELEMENTS[0];
+  const cardMineEl = $("card-mine");
+  cardMineEl.style.setProperty("--el-color", myCard ? myCard.color : elMine.color);
+  cardMineEl.querySelector(".el-tag").textContent = myCard ? myCard.element : "—";
+  cardMineEl.querySelector(".card-name").textContent = myCard ? myCard.name : "—";
+  cardMineEl.querySelector(".card-glyph").textContent = myCard ? myCard.glyph : "🂠";
+
+  const statsBox = $("stats-mine");
+  statsBox.innerHTML = "";
+  if(myCard){
+    STAT_KEYS.forEach(k => {
+      const row = document.createElement("div");
+      row.className = "stat-row";
+      const canClick = isMyTurn;
+      if(canClick) row.classList.add("clickable","pickable");
+
+      if(game.phase === "resolved" && game.lastStat === k){
+        row.classList.add("chosen");
+        row.classList.add(
+          (game.roundWinner === role) ? "win" :
+          (game.roundWinner === "tie") ? "" : "lose"
+        );
+      }
+
+      row.innerHTML = '<span class="k">'+STAT_LABELS[k]+'</span><span class="v">'+myCard.stats[k]+'</span>';
+      if(canClick){
+        row.addEventListener("click", () => chooseStat(k));
+      }
+      statsBox.appendChild(row);
+    });
+  }
+
+  // carta rival
+  const cardOppEl = $("card-opp");
+  const revealed = game.phase === "resolved" || game.phase === "gameover";
+  if(revealed && oppCard){
+    const elOpp = ELEMENTS.find(e=>e.key === oppCard.element) || ELEMENTS[0];
+    cardOppEl.classList.remove("facedown");
+    cardOppEl.style.setProperty("--el-color", oppCard.color);
+    cardOppEl.innerHTML =
+      '<span class="el-tag">'+oppCard.element+'</span>'+
+      '<div class="card-glyph">'+oppCard.glyph+'</div>'+
+      '<div class="card-name">'+oppCard.name+'</div>'+
+      '<div class="stats">'+
+        STAT_KEYS.map(k => {
+          let cls = "stat-row";
+          if(game.lastStat === k){
+            cls += " chosen " + (game.roundWinner === "tie" ? "" : (game.roundWinner !== role ? "win" : "lose"));
+          }
+          return '<div class="'+cls+'"><span class="k">'+STAT_LABELS[k]+'</span><span class="v">'+oppCard.stats[k]+'</span></div>';
+        }).join("")+
+      '</div>';
+  } else {
+    cardOppEl.classList.add("facedown");
+    cardOppEl.innerHTML = '<span class="rune">✦</span>';
+  }
+
+  // log
+  $("log-box").innerHTML = game.log || "";
+}
+
+function showGameOver(){
+  const iWon = game.winner === role;
+  $("go-trophy").textContent = iWon ? "🏆" : "💀";
+  const title = $("go-title");
+  title.textContent = iWon ? "¡Has ganado el duelo!" : "Has perdido el duelo";
+  title.className = iWon ? "win" : "lose";
+  $("go-sub").textContent = iWon
+    ? "Reuniste las 40 cartas del mazo arcano."
+    : "Tu rival reunió las 40 cartas del mazo arcano.";
+  showScreen("screen-gameover");
+}
+
+/* ---------------------------------------------------------------------- */
+/* Reset / navegación                                                     */
+/* ---------------------------------------------------------------------- */
+function resetToLobby(){
+  try{ if(conn) conn.close(); }catch(e){}
+  try{ if(peer) peer.destroy(); }catch(e){}
+  conn = null; peer = null; role = null; game = null; hostCode = null;
+  $("input-join-code").value = "";
+  showScreen("screen-lobby");
+}
+
+/* ---------------------------------------------------------------------- */
+/* Eventos de UI                                                          */
+/* ---------------------------------------------------------------------- */
+$("btn-goto-host").addEventListener("click", startHostFlow);
+$("btn-join").addEventListener("click", startJoinFlow);
+$("input-join-code").addEventListener("keydown", e => { if(e.key === "Enter") startJoinFlow(); });
+
+$("btn-copy-code").addEventListener("click", () => {
+  const code = $("host-code").textContent;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(code).then(()=>toast("Código copiado")).catch(()=>toast(code));
+  } else {
+    toast(code);
+  }
+});
+
+$("btn-cancel-wait").addEventListener("click", resetToLobby);
+$("btn-leave-game").addEventListener("click", () => {
+  if(conn && conn.open) conn.send({type:"leave"});
+  resetToLobby();
+});
+
+$("btn-rematch").addEventListener("click", () => {
+  if(role === "host"){
+    beginNewGame();
+  } else {
+    if(conn && conn.open) conn.send({type:"rematchRequest"});
+    $("go-sub").textContent = "Esperando que el anfitrión inicie una nueva partida…";
+  }
+});
+$("btn-back-lobby").addEventListener("click", resetToLobby);
+
+/* ---------------------------------------------------------------------- */
+/* PWA — registro del service worker                                     */
+/* ---------------------------------------------------------------------- */
+if("serviceWorker" in navigator){
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("service-worker.js").catch(()=>{});
+  });
+}
+
+// Sugerencia de instalación (evento beforeinstallprompt en Android/desktop)
+let deferredPrompt = null;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+});
+</script>
+</body>
+</html>
