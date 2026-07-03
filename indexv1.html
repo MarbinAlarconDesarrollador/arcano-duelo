@@ -306,79 +306,6 @@
   }
   #toast.show{opacity:1; transform:translate(-50%, 0);}
 
-  /* ---------- imagen de carta (PNG subida por el usuario) ---------- */
-  .card-media{
-    position:relative;
-    width:100%;
-    height:118px;
-    border-radius:10px;
-    overflow:hidden;
-    margin:2px 0 8px;
-    background:rgba(255,255,255,.03);
-    border:1px solid rgba(255,255,255,.08);
-    box-shadow:0 0 16px -4px var(--el-color, var(--cyan)) inset;
-  }
-  .card-media img{
-    width:100%; height:100%; object-fit:cover; display:block;
-    filter:saturate(1.05);
-  }
-  .card-media .glyph-fallback{
-    width:100%; height:100%; display:flex; align-items:center; justify-content:center;
-    font-size:34px; filter:drop-shadow(0 0 8px var(--el-color));
-  }
-
-  /* ---------- editor de mazo ---------- */
-  #screen-editor{gap:12px;}
-  .editor-toolbar{display:flex; gap:8px; flex-wrap:wrap;}
-  .editor-toolbar .btn{flex:1; font-size:12px; padding:11px 8px;}
-  .editor-list{display:flex; flex-direction:column; gap:8px; overflow-y:auto; padding-right:2px;}
-
-  .edit-row{
-    display:flex; gap:10px; align-items:center;
-    background:rgba(255,255,255,.03); border:1px solid var(--line);
-    border-radius:10px; padding:8px;
-  }
-  .thumb{
-    position:relative; flex:0 0 56px; width:56px; height:56px;
-    border-radius:8px; overflow:hidden; cursor:pointer;
-    border:1px solid var(--line); background:rgba(255,255,255,.04);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .thumb input[type=file]{position:absolute; inset:0; opacity:0; cursor:pointer;}
-  .thumb img{width:100%; height:100%; object-fit:cover;}
-  .thumb .thumb-placeholder{font-size:22px;}
-  .thumb .thumb-edit{
-    position:absolute; right:2px; bottom:2px; font-size:9px;
-    background:rgba(0,0,0,.6); border-radius:4px; padding:1px 3px; color:var(--cyan);
-    pointer-events:none;
-  }
-
-  .edit-fields{flex:1; display:flex; flex-direction:column; gap:6px; min-width:0;}
-  .edit-fields .f-name{
-    font-size:12px; padding:7px 9px; letter-spacing:.5px; text-transform:none;
-  }
-  .stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:5px;}
-  .stat-field{
-    display:flex; align-items:center; gap:4px;
-    background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:6px;
-    padding:3px 6px;
-  }
-  .stat-field span{font-size:11px; color:var(--text-dim);}
-  .stat-field input[type=number]{
-    width:100%; border:none; background:transparent; color:var(--text);
-    font-family:var(--font-mono); font-size:12px; text-align:right; outline:none;
-  }
-
-  .edit-actions{display:flex; flex-direction:column; gap:6px; flex:0 0 auto;}
-  .mini-btn{
-    width:30px; height:30px; border-radius:8px; border:1px solid var(--line);
-    background:rgba(255,255,255,.03); color:var(--text-dim); font-size:13px;
-    cursor:pointer; display:flex; align-items:center; justify-content:center;
-  }
-  .mini-btn:active{transform:scale(.92);}
-  .mini-btn.dice:hover{border-color:var(--gold); color:var(--gold);}
-  .mini-btn.trash:hover{border-color:var(--danger); color:var(--danger);}
-
   @media (min-width:640px){
     .card{min-height:270px;}
   }
@@ -410,21 +337,7 @@
       </div>
     </div>
 
-    <button class="btn btn-ghost btn-block" id="btn-goto-editor">🎨 Personalizar cartas (imágenes PNG y puntuaciones)</button>
-
     <p class="muted center" style="margin-top:6px;">Se necesita conexión a internet para emparejar con tu rival.</p>
-  </section>
-
-  <!-- ===================== EDITOR DE MAZO ===================== -->
-  <section id="screen-editor" class="screen">
-    <h3 class="center">Editor de mazo (40 cartas)</h3>
-    <p class="muted center">Toca la miniatura para subir una imagen PNG. Se guarda en este dispositivo y se envía a tu rival al empezar la partida.</p>
-    <div class="editor-toolbar">
-      <button class="btn btn-ghost" id="btn-randomize-stats">🎲 Aleatorizar stats</button>
-      <button class="btn btn-ghost" id="btn-reset-deck">↺ Restablecer mazo</button>
-    </div>
-    <div class="editor-list" id="editor-list"></div>
-    <button class="btn btn-primary btn-block" id="btn-editor-save">✔ Guardar y volver</button>
   </section>
 
   <!-- ===================== ESPERANDO ===================== -->
@@ -455,7 +368,7 @@
       <div class="card-wrap">
         <div class="card" id="card-mine">
           <span class="el-tag">—</span>
-          <div class="card-media" id="media-mine"><div class="glyph-fallback">🂠</div></div>
+          <div class="card-glyph">🂠</div>
           <div class="card-name">—</div>
           <div class="stats" id="stats-mine"></div>
         </div>
@@ -544,114 +457,10 @@ function createDeck(){
     deck.push({
       id: "c"+i+"_"+Math.random().toString(36).slice(2,7),
       name, element: el.key, color: el.color, glyph: el.glyph,
-      image: null, // dataURL PNG opcional, definido en el editor de mazo
       stats
     });
   }
   return deck;
-}
-
-/* ---------------------------------------------------------------------- */
-/* Mazo personalizado — imágenes PNG y puntuaciones editables             */
-/* ---------------------------------------------------------------------- */
-const DECK_STORAGE_KEY = "arcanoDuelo_customDeck_v1";
-let customDeck = null; // array de 40 cartas en edición
-
-function loadDeckFromStorage(){
-  try{
-    const raw = localStorage.getItem(DECK_STORAGE_KEY);
-    if(!raw) return null;
-    const parsed = JSON.parse(raw);
-    if(Array.isArray(parsed) && parsed.length === 40) return parsed;
-  }catch(e){}
-  return null;
-}
-
-function saveDeckToStorage(){
-  try{
-    localStorage.setItem(DECK_STORAGE_KEY, JSON.stringify(customDeck));
-  }catch(e){
-    toast("No se pudo guardar el mazo (¿memoria llena?)");
-  }
-}
-
-function getDeckForGame(){
-  const saved = loadDeckFromStorage();
-  if(saved) return saved.map(c => ({...c, stats:{...c.stats}}));
-  return createDeck();
-}
-
-/* Redimensiona y convierte cualquier imagen subida a PNG para la carta */
-function resizeImageToPNG(file, maxDim = 320){
-  return new Promise((resolve, reject) => {
-    if(!file || !file.type || !file.type.startsWith("image/")){
-      reject(new Error("Archivo no es una imagen"));
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        let w = img.width, h = img.height;
-        const scale = Math.min(1, maxDim / Math.max(w, h));
-        w = Math.max(1, Math.round(w * scale));
-        h = Math.max(1, Math.round(h * scale));
-        const canvas = document.createElement("canvas");
-        canvas.width = w; canvas.height = h;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL("image/png"));
-      };
-      img.onerror = () => reject(new Error("No se pudo leer la imagen"));
-      img.src = e.target.result;
-    };
-    reader.onerror = () => reject(new Error("No se pudo leer el archivo"));
-    reader.readAsDataURL(file);
-  });
-}
-
-function clampStat(v){
-  v = parseInt(v, 10);
-  if(isNaN(v)) v = 1;
-  return Math.min(99, Math.max(1, v));
-}
-
-function openEditor(){
-  customDeck = loadDeckFromStorage() || createDeck();
-  renderEditorList();
-  showScreen("screen-editor");
-}
-
-function renderEditorList(){
-  const list = $("editor-list");
-  list.innerHTML = "";
-  customDeck.forEach((card, idx) => {
-    const row = document.createElement("div");
-    row.className = "edit-row";
-    row.dataset.index = idx;
-    row.innerHTML =
-      '<label class="thumb" style="--el-color:'+card.color+'">'+
-        '<input type="file" accept="image/png, image/jpeg, image/webp" class="thumb-input">'+
-        (card.image
-          ? '<img src="'+card.image+'" alt="">'
-          : '<span class="thumb-placeholder">'+card.glyph+'</span>') +
-        '<span class="thumb-edit">PNG</span>'+
-      '</label>'+
-      '<div class="edit-fields">'+
-        '<input type="text" class="f-name" value="'+card.name.replace(/"/g,"&quot;")+'" maxlength="26">'+
-        '<div class="stat-grid">'+
-          STAT_KEYS.map(k =>
-            '<label class="stat-field"><span>'+STAT_LABELS[k].split(" ")[0]+'</span>'+
-            '<input type="number" class="f-stat" data-k="'+k+'" min="1" max="99" value="'+card.stats[k]+'"></label>'
-          ).join("")+
-        '</div>'+
-      '</div>'+
-      '<div class="edit-actions">'+
-        '<button class="mini-btn dice" title="Aleatorizar stats de esta carta">🎲</button>'+
-        '<button class="mini-btn trash" title="Quitar imagen">🗑</button>'+
-      '</div>';
-    list.appendChild(row);
-  });
 }
 
 /* ---------------------------------------------------------------------- */
@@ -788,7 +597,7 @@ function onOpponentLeft(){
 /* Lógica de partida — el HOST es autoridad                               */
 /* ---------------------------------------------------------------------- */
 function beginNewGame(){
-  const deck = shuffle(getDeckForGame());
+  const deck = shuffle(createDeck());
   const half = deck.length/2;
   game = {
     hostHand: deck.slice(0, half),
@@ -957,11 +766,7 @@ function renderGame(){
   cardMineEl.style.setProperty("--el-color", myCard ? myCard.color : elMine.color);
   cardMineEl.querySelector(".el-tag").textContent = myCard ? myCard.element : "—";
   cardMineEl.querySelector(".card-name").textContent = myCard ? myCard.name : "—";
-  $("media-mine").innerHTML = myCard
-    ? (myCard.image
-        ? '<img src="'+myCard.image+'" alt="'+myCard.name+'">'
-        : '<div class="glyph-fallback">'+myCard.glyph+'</div>')
-    : '<div class="glyph-fallback">🂠</div>';
+  cardMineEl.querySelector(".card-glyph").textContent = myCard ? myCard.glyph : "🂠";
 
   const statsBox = $("stats-mine");
   statsBox.innerHTML = "";
@@ -997,9 +802,7 @@ function renderGame(){
     cardOppEl.style.setProperty("--el-color", oppCard.color);
     cardOppEl.innerHTML =
       '<span class="el-tag">'+oppCard.element+'</span>'+
-      '<div class="card-media">'+(oppCard.image
-          ? '<img src="'+oppCard.image+'" alt="'+oppCard.name+'">'
-          : '<div class="glyph-fallback">'+oppCard.glyph+'</div>')+'</div>'+
+      '<div class="card-glyph">'+oppCard.glyph+'</div>'+
       '<div class="card-name">'+oppCard.name+'</div>'+
       '<div class="stats">'+
         STAT_KEYS.map(k => {
@@ -1046,74 +849,6 @@ function resetToLobby(){
 /* Eventos de UI                                                          */
 /* ---------------------------------------------------------------------- */
 $("btn-goto-host").addEventListener("click", startHostFlow);
-$("btn-goto-editor").addEventListener("click", openEditor);
-
-$("editor-list").addEventListener("change", async (e) => {
-  const row = e.target.closest(".edit-row");
-  if(!row) return;
-  const idx = parseInt(row.dataset.index, 10);
-  const card = customDeck[idx];
-
-  if(e.target.classList.contains("thumb-input")){
-    const file = e.target.files && e.target.files[0];
-    if(!file) return;
-    try{
-      const dataUrl = await resizeImageToPNG(file, 320);
-      card.image = dataUrl;
-      saveDeckToStorage();
-      renderEditorList();
-      toast("Imagen PNG actualizada");
-    }catch(err){
-      toast("No se pudo cargar la imagen");
-    }
-  } else if(e.target.classList.contains("f-name")){
-    card.name = e.target.value.trim() || card.name;
-    saveDeckToStorage();
-  } else if(e.target.classList.contains("f-stat")){
-    const k = e.target.dataset.k;
-    card.stats[k] = clampStat(e.target.value);
-    e.target.value = card.stats[k];
-    saveDeckToStorage();
-  }
-});
-
-$("editor-list").addEventListener("click", (e) => {
-  const row = e.target.closest(".edit-row");
-  if(!row) return;
-  const idx = parseInt(row.dataset.index, 10);
-  const card = customDeck[idx];
-
-  if(e.target.closest(".dice")){
-    STAT_KEYS.forEach(k => card.stats[k] = randInt(15,98));
-    saveDeckToStorage();
-    renderEditorList();
-  } else if(e.target.closest(".trash")){
-    card.image = null;
-    saveDeckToStorage();
-    renderEditorList();
-  }
-});
-
-$("btn-randomize-stats").addEventListener("click", () => {
-  customDeck.forEach(card => STAT_KEYS.forEach(k => card.stats[k] = randInt(15,98)));
-  saveDeckToStorage();
-  renderEditorList();
-  toast("Puntuaciones aleatorizadas");
-});
-
-$("btn-reset-deck").addEventListener("click", () => {
-  if(!confirm("¿Restablecer el mazo por defecto? Se perderán las imágenes y nombres personalizados.")) return;
-  customDeck = createDeck();
-  saveDeckToStorage();
-  renderEditorList();
-  toast("Mazo restablecido");
-});
-
-$("btn-editor-save").addEventListener("click", () => {
-  saveDeckToStorage();
-  toast("Mazo guardado");
-  showScreen("screen-lobby");
-});
 $("btn-join").addEventListener("click", startJoinFlow);
 $("input-join-code").addEventListener("keydown", e => { if(e.key === "Enter") startJoinFlow(); });
 
