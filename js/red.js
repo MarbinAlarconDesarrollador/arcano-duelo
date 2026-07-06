@@ -24,10 +24,18 @@ export class RedManager extends EventTarget {
         });
 
         this.peer.on('connection', (c) => {
+            console.log('Rival conectado!');
             this.conn = c;
             this.setupListeners();
+            // Este evento es el que el nuevo app.js escuchará
             this.dispatchEvent(new CustomEvent('rival_conectado'));
         });
+
+       // this.peer.on('connection', (c) => {
+       //     this.conn = c;
+       //     this.setupListeners();
+       //     this.dispatchEvent(new CustomEvent('rival_conectado'));
+       // });
 
         this.peer.on('error', (err) => {
             console.error('Error de PeerJS:', err);
