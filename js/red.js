@@ -5,7 +5,13 @@
 export class RedManager extends EventTarget {
     constructor() {
         super();
-        this.peer = new Peer();
+        // Configuración explícita para evitar bloqueos
+        this.peer = new Peer(undefined, {
+            host: '0.peerjs.com',
+            port: 443,
+            path: '/',
+            secure: true
+        });
         this.conn = null;
         this.init();
     }
