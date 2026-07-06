@@ -1,34 +1,12 @@
 {
-  "name": "Arcano Duelo — Cartas de Combate",
-  "short_name": "Arcano Duelo",
-  "description": "Duelo de cartas estilo Super Trunfo con combate 1vs1 en línea vía P2P.",
-  "start_url": "./index.html",
-  "scope": "./",
+  "name": "CyberCard Duel",
+  "short_name": "CardDuel",
+  "start_url": "/",
   "display": "fullscreen",
-  "display_override": ["fullscreen", "standalone"],
-  "orientation": "portrait-primary",
-  "background_color": "#05030a",
-  "theme_color": "#05030a",
-  "categories": ["games", "entertainment"],
-  "lang": "es",
+  "background_color": "#0a0a0c",
+  "theme_color": "#0ff",
   "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icon-512-maskable.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
+    { "src": "img/iconos/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "img/iconos/icon-512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
