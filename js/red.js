@@ -10,7 +10,8 @@ export class RedManager extends EventTarget {
             host: '0.peerjs.com',
             port: 443,
             path: '/',
-            secure: true
+            secure: true,
+             debug: 3 // Esto te dará más info en la consola
         });
         this.conn = null;
         this.init();
