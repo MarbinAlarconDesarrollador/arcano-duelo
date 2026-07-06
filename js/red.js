@@ -5,13 +5,13 @@
 export class RedManager extends EventTarget {
     constructor() {
         super();
-        // Configuración explícita para evitar bloqueos
+        // Configuración robusta para producción en GitHub Pages
         this.peer = new Peer(undefined, {
             host: '0.peerjs.com',
             port: 443,
-            path: '/',
             secure: true,
-             debug: 3 // Esto te dará más info en la consola
+            path: '/',
+            debug: 1
         });
         this.conn = null;
         this.init();
@@ -23,9 +23,7 @@ export class RedManager extends EventTarget {
             this.dispatchEvent(new CustomEvent('conectado', { detail: id }));
         });
 
-        // IMPORTANTE: Escuchar cuando alguien se conecta a ti
         this.peer.on('connection', (c) => {
-            console.log('Rival conectado!');
             this.conn = c;
             this.setupListeners();
             this.dispatchEvent(new CustomEvent('rival_conectado'));
@@ -37,22 +35,14 @@ export class RedManager extends EventTarget {
     }
 
     conectarConRival(idRival) {
-        console.log('Intentando conectar con:', idRival);
         this.conn = this.peer.connect(idRival);
         this.setupListeners();
     }
 
     setupListeners() {
         if (!this.conn) return;
-
-        // Listener cuando la conexión se abre
-        this.conn.on('open', () => {
-            console.log('Conexión P2P establecida con éxito');
-        });
-
-        // Listener de datos
+        this.conn.on('open', () => console.log('Conexión P2P establecida'));
         this.conn.on('data', (data) => {
-            console.log('Evento recibido:', data);
             this.dispatchEvent(new CustomEvent('evento_recibido', { detail: data }));
         });
     }
@@ -60,8 +50,6 @@ export class RedManager extends EventTarget {
     enviar(accion, payload = {}) {
         if (this.conn && this.conn.open) {
             this.conn.send({ accion, payload });
-        } else {
-            console.error('No hay conexión activa para enviar datos.');
         }
     }
 }
