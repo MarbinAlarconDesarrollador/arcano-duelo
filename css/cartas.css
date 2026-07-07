@@ -1,25 +1,131 @@
-/* css/cartas.css */
-:root {
-    --rareza-comun: #a0a0a0;
-    --rareza-legendario: #ffcc00;
+#tablero{
+
+    display:grid;
+
+    grid-template-columns:1fr 250px 1fr;
+
+    gap:25px;
+
+    align-items:start;
+
 }
 
-.card {
-    width: 250px;
-    height: 380px;
-    border-radius: 15px;
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    transition: transform 0.3s;
-    background: #1a1a1a;
-    border: 3px solid var(--border-color);
-    box-shadow: 0 0 15px var(--glow-color);
+.carta{
+
+    width:340px;
+
+    min-height:640px;
+
+    margin:auto;
+
+    background:white;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    color:#222;
+
+    border:6px solid #888;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.4);
+
 }
 
-/* Aplicación de estilos según rareza */
-.card[data-rareza="Común"] { --border-color: var(--rareza-comun); --glow-color: rgba(160, 160, 160, 0.2); }
-.card[data-rareza="Legendario"] { --border-color: var(--rareza-legendario); --glow-color: rgba(255, 204, 0, 0.5); }
+.nombre{
 
-.card-img { width: 100%; height: 65%; object-fit: cover; border-radius: 10px; }
-.stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 10px; }
+    background:#202B3C;
+
+    color:white;
+
+    font-size:28px;
+
+    font-weight:bold;
+
+    text-align:center;
+
+    padding:15px;
+
+}
+
+.rareza{
+
+    text-align:center;
+
+    padding:8px;
+
+    background:#DDD;
+
+    font-weight:bold;
+
+}
+
+.imagen{
+
+    width:100%;
+
+    height:360px;
+
+    object-fit:contain;
+
+    background:#F5F5F5;
+
+}
+
+.categoria{
+
+    font-weight:bold;
+
+    text-align:center;
+
+    margin-top:10px;
+
+}
+
+.descripcion{
+
+    padding:12px;
+
+    color:#444;
+
+    text-align:center;
+
+    min-height:70px;
+
+}
+
+.stats{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+    padding:15px;
+
+}
+
+.stat{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    background:#EDF2F7;
+
+    font-size:18px;
+
+}
+
+.stat:hover{
+
+    background:#D6EAF8;
+
+}
