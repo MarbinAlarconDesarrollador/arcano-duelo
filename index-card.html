@@ -661,19 +661,25 @@ footer.hint {
         .card-media {
             position: relative;
             width: 100%;
-            height: 100%;
+            height: 118px;
             border-radius: 10px;
             overflow: hidden;
             margin: 2px 0 8px;
-            background: rgba(255, 255, 255, .03);
+            background:
+                radial-gradient(circle at 50% 30%, rgba(255, 255, 255, .05), transparent 70%),
+                rgba(255, 255, 255, .03);
             border: 1px solid rgba(255, 255, 255, .08);
             box-shadow: 0 0 16px -4px var(--el-color, var(--cyan)) inset;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .card-media img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            object-position: center;
             display: block;
             filter: saturate(1.05);
         }
@@ -1072,7 +1078,7 @@ footer.hint {
             {
                 id: 7,
                 nombre: "Rukia Kuchiki - Bleach",
-                imagen: "img/personajes/bleach/rukia-kuchiki.jpeg",
+                imagen: "img/personajes/bleach/rukiya-kuchiki.jpeg",
                 descripcion: "Actual capitana de la 13.ª División , sucediendo al excapitán Jūshirō Ukitake tras haber servido anteriormente como teniente. Rukia es la hermana adoptiva de Byakuya Kuchiki , la hermana menor de Hisana Kuchiki , amiga de Ichigo Kurosaki , madre de Ichika Abarai y está casada con Renji Abarai .",
                 categoria: "Segadores de Almas",
                 rareza: "Común",
@@ -1090,7 +1096,7 @@ footer.hint {
             {
                 id: 9,
                 nombre: "Shunsui Kyoraku - Bleach",
-                imagen: "img/personajes/bleach/shunsui-Kyoraku.jpeg",
+                imagen: "img/personajes/bleach/shunsui-kyoraku.jpeg",
                 descripcion: "Es el capitán de la 1.ª División y capitán comandante del Gotei 13. Sus tenientes son su sobrina, Nanao Ise , y Genshirō Okikiba . Es el antiguo capitán de la 8.ª División .",
                 categoria: "Segadores de Almas",
                 rareza: "Legendario",
