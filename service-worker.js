@@ -1,5 +1,5 @@
 // service-worker.js
-const CACHE_NAME = 'cybercard-v1';
+const CACHE_NAME = 'cybercard-v2';
 const ASSETS = ['/', '/index.html', '/css/estilos.css', '/js/app.js', '/js/mazo.js', '/js/personajes.js', '/js/red.js', '/js/carta.js', '/img/personajes/dragon_cosmico.png', '/img/personajes/robot.png'];
 
 self.addEventListener('install', e => {

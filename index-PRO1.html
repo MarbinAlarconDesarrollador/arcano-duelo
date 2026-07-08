@@ -1072,7 +1072,7 @@ footer.hint {
             {
                 id: 7,
                 nombre: "Rukia Kuchiki - Bleach",
-                imagen: "img/personajes/bleach/rukiya-kuchiki.jpeg",
+                imagen: "img/personajes/bleach/rukia-kuchiki.jpeg",
                 descripcion: "Actual capitana de la 13.ª División , sucediendo al excapitán Jūshirō Ukitake tras haber servido anteriormente como teniente. Rukia es la hermana adoptiva de Byakuya Kuchiki , la hermana menor de Hisana Kuchiki , amiga de Ichigo Kurosaki , madre de Ichika Abarai y está casada con Renji Abarai .",
                 categoria: "Segadores de Almas",
                 rareza: "Común",
@@ -1090,7 +1090,7 @@ footer.hint {
             {
                 id: 9,
                 nombre: "Shunsui Kyoraku - Bleach",
-                imagen: "img/personajes/bleach/shunsui-kyoraku.jpeg",
+                imagen: "img/personajes/bleach/shunsui-Kyoraku.jpeg",
                 descripcion: "Es el capitán de la 1.ª División y capitán comandante del Gotei 13. Sus tenientes son su sobrina, Nanao Ise , y Genshirō Okikiba . Es el antiguo capitán de la 8.ª División .",
                 categoria: "Segadores de Almas",
                 rareza: "Legendario",
@@ -1702,11 +1702,10 @@ footer.hint {
 
                     if (game.phase === "resolved" && game.lastStat === k) {
                         row.classList.add("chosen");
-                        if (game.roundWinner === role) {
-                            row.classList.add("win");
-                        } else if (game.roundWinner !== "tie") {
-                            row.classList.add("lose");
-                        }
+                        row.classList.add(
+                            (game.roundWinner === role) ? "win" :
+                                (game.roundWinner === "tie") ? "" : "lose"
+                        );
                     }
 
                     row.innerHTML = '<span class="k">' + STAT_LABELS[k] + '</span><span class="v">' + myCard.stats[k] + '</span>';
