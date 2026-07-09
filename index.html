@@ -997,14 +997,18 @@ footer.hint {
            ARCANO DUELO — lógica del juego
            ========================================================================= */
 
-        const STAT_KEYS = ["ataque", "defensa", "velocidad", "magia"];
-        const STAT_LABELS = { ataque: "⚔ Ataque", defensa: "🛡 Defensa", velocidad: "⚡ Velocidad", magia: "✨ Magia" };
+        const STAT_KEYS = ["ataque", "defensa", "velocidad", "magia", "vida", "inteligencia", "resistencia", "poder"];
+        const STAT_LABELS = { ataque: "⚔ Ataque", defensa: "🛡 Defensa", velocidad: "⚡ Velocidad", magia: "✨ Magia", vida: "❤️ Vida", inteligencia: "🧠 Inteligencia", resistencia: "🛡 Resistencia", poder: "💪 Poder" };
 
         const ELEMENTS = [
             { key: "fuego", color: "#ff5a3c", glyph: "🔥" },
             { key: "hielo", color: "#3cd2ff", glyph: "❄️" },
             { key: "sombra", color: "#a463ff", glyph: "🌑" },
             { key: "luz", color: "#ffe66d", glyph: "☀️" },
+            { key: "trueno", color: "#ffd93c", glyph: "⚡" },
+            { key: "agua", color: "#3c9eff", glyph: "💧" },
+            { key: "tierra", color: "#8b5e3c", glyph: "🌍" },
+            { key: "aire", color: "#a3f0ff", glyph: "💨" }
         ];
 
         /* ---------------------------------------------------------------------- */
@@ -1230,6 +1234,123 @@ footer.hint {
                 categoria: "Caballeros del Zodiaco",
                 rareza: "Épico",
                 stats: { vida: 85, ataque: 90, defensa: 80, velocidad: 85, magia: 55, inteligencia: 80, resistencia: 85, poder: 86 }
+            },
+            {
+                id: 25,
+                nombre: "Choso - Jujutsu Kaisen",
+                imagen: "img/personajes/jujutsu-kaisen/choso.jpeg",
+                descripcion: "Choso es un personaje de Jujutsu Kaisen, conocido por su fuerza y habilidades sobrenaturales. Es un miembro del Círculo de los Catorce, un grupo de estudiantes que luchan contra los yokai.",
+                categoria: "Jujutsu Kaisen",
+                rareza: "Épico",
+                stats: { vida: 81, ataque: 83, defensa: 79, velocidad: 75, magia: 55, inteligencia: 60, resistencia: 81, poder: 81 }
+            },
+            {
+                id: 26,
+                nombre: "jogo - Jujutsu Kaisen",
+                imagen: "img/personajes/jujutsu-kaisen/jogo.jpeg",
+                descripcion: "Jogo es un personaje de Jujutsu Kaisen, conocido por su fuerza y habilidades sobrenaturales. Es un miembro del Círculo de los Catorce, un grupo de estudiantes que luchan contra los yokai.",
+                categoria: "Jujutsu Kaisen",
+                rareza: "Épico",
+                stats: { vida: 79, ataque: 86, defensa: 83, velocidad: 78, magia: 55, inteligencia: 70, resistencia: 85, poder: 84 }
+            },
+            {
+                id: 27,
+                nombre: "Kento Kanami - Jujutsu Kaisen",
+                imagen: "img/personajes/jujutsu-kaisen/kento-kanami.jpeg",
+                descripcion: "Kento Kanami es un personaje de Jujutsu Kaisen, conocido por su fuerza y habilidades sobrenaturales. Es un miembro del Círculo de los Catorce, un grupo de estudiantes que luchan contra los yokai.",
+                categoria: "Jujutsu Kaisen",
+                rareza: "Épico",
+                stats: { vida: 81, ataque: 83, defensa: 79, velocidad: 75, magia: 55, inteligencia: 60, resistencia: 81, poder: 81 }
+            },
+            {
+                id: 28,
+                nombre: "Mahito - Jujutsu Kaisen",
+                imagen: "img/personajes/jujutsu-kaisen/mahito.jpeg",
+                descripcion: "Mahito es un personaje de Jujutsu Kaisen, conocido por su fuerza y habilidades sobrenaturales. Es un miembro del Círculo de los Catorce, un grupo de estudiantes que luchan contra los yokai.",
+                categoria: "Jujutsu Kaisen",
+                rareza: "Épico",
+                stats: { vida: 86, ataque: 91, defensa: 90, velocidad: 73, magia: 55, inteligencia: 78, resistencia: 88, poder: 88 }
+            },
+            {
+                id: 29,
+                nombre: "Megumi Fushiguro - Jujutsu Kaisen",
+                imagen: "img/personajes/jujutsu-kaisen/megumifushiguro.jpeg",
+                descripcion: "Megumi Fushiguro es un personaje de Jujutsu Kaisen, conocido por su fuerza y habilidades sobrenaturales. Es un miembro del Círculo de los Catorce, un grupo de estudiantes que luchan contra los yokai.",
+                categoria: "Jujutsu Kaisen",
+                rareza: "Épico",
+                stats: { vida: 83, ataque: 84, defensa: 81, velocidad: 78, magia: 75, inteligencia: 80, resistencia: 83, poder: 85 }
+            },
+            {
+                id: 30,
+                nombre: "Mei Mei - Jujutsu Kaisen",
+                imagen: "img/personajes/jujutsu-kaisen/mei-mei.jpeg",
+                descripcion: "Mei Mei es un personaje de Jujutsu Kaisen, conocido por su fuerza y habilidades sobrenaturales. Es un miembro del Círculo de los Catorce, un grupo de estudiantes que luchan contra los yokai.",
+                categoria: "Jujutsu Kaisen",
+                rareza: "Épico",
+                stats: { vida: 87, ataque: 88, defensa: 81, velocidad: 78, magia: 75, inteligencia: 72, resistencia: 86, poder: 87 }
+            },
+            {
+                id: 31,
+                nombre: "Noritoshi Kamo - Jujutsu Kaisen",
+                imagen: "img/personajes/jujutsu-kaisen/noritoshi-kamo.jpeg",
+                descripcion: "Noritoshi Kamo es un personaje de Jujutsu Kaisen, conocido por su fuerza y habilidades sobrenaturales. Es un miembro del Círculo de los Catorce, un grupo de estudiantes que luchan contra los yokai.",
+                categoria: "Jujutsu Kaisen",
+                rareza: "Épico",
+                stats: { vida: 91, ataque: 93, defensa: 89, velocidad: 85, magia: 0, inteligencia: 66, resistencia: 89, poder: 92 }
+            },
+            {
+                id: 32,
+                nombre: "Saturu Goyo - Jujutsu Kaisen",
+                imagen: "img/personajes/jujutsu-kaisen/saturu-goyo.jpeg",
+                descripcion: "Saturu Goyo es un personaje de Jujutsu Kaisen, conocido por su fuerza y habilidades sobrenaturales. Es un miembro del Círculo de los Catorce, un grupo de estudiantes que luchan contra los yokai.",
+                categoria: "Jujutsu Kaisen",
+                rareza: "Legendario",
+                stats: { vida: 95, ataque: 97, defensa: 93, velocidad: 91, magia: 85, inteligencia: 90, resistencia: 81, poder: 96 }
+            },
+            {
+                id: 33,
+                nombre: "Suguru Geto - Jujutsu Kaisen",
+                imagen: "img/personajes/jujutsu-kaisen/suguru-geto.jpeg",
+                descripcion: "Suguru Geto es un personaje de Jujutsu Kaisen, conocido por su fuerza y habilidades sobrenaturales. Es un miembro del Círculo de los Catorce, un grupo de estudiantes que luchan contra los yokai.",
+                categoria: "Jujutsu Kaisen",
+                rareza: "Épico",
+                stats: { vida: 92, ataque: 93, defensa: 91, velocidad: 85, magia: 75, inteligencia: 89, resistencia: 83, poder: 91 }
+            },
+            {
+                id: 34,
+                nombre: "Sukuna - Jujutsu Kaisen",
+                imagen: "img/personajes/jujutsu-kaisen/sukuna.jpeg",
+                descripcion: "Sukuna es un personaje de Jujutsu Kaisen, conocido por su fuerza y habilidades sobrenaturales. Es un miembro del Círculo de los Catorce, un grupo de estudiantes que luchan contra los yokai.",
+                categoria: "Jujutsu Kaisen",
+                rareza: "Legendario",
+                stats: { vida: 92, ataque: 93, defensa: 91, velocidad: 85, magia: 92, inteligencia: 89, resistencia: 83, poder: 95 }
+            },
+            {
+                id: 35,
+                nombre: "Tego Inumaki - Jujutsu Kaisen",
+                imagen: "img/personajes/jujutsu-kaisen/tego-inumaki.jpeg",
+                descripcion: "Tego Inumaki es un personaje de Jujutsu Kaisen, conocido por su fuerza y habilidades sobrenaturales. Es un miembro del Círculo de los Catorce, un grupo de estudiantes que luchan contra los yokai.",
+                categoria: "Jujutsu Kaisen",
+                rareza: "Épico",
+                stats: { vida: 81, ataque: 83, defensa: 78, velocidad: 75, magia: 55, inteligencia: 80, resistencia: 75, poder: 79 }
+            },
+            {
+                id: 36,
+                nombre: "Yoshinobu Gakuganji - Jujutsu Kaisen",
+                imagen: "img/personajes/jujutsu-kaisen/yoshinobu-gakuganji.jpeg",
+                descripcion: "Yoshinobu Gakuganji es un personaje de Jujutsu Kaisen, conocido por su fuerza y habilidades sobrenaturales. Es un miembro del Círculo de los Catorce, un grupo de estudiantes que luchan contra los yokai.",
+                categoria: "Jujutsu Kaisen",
+                rareza: "Épico",
+                stats: { vida: 80, ataque: 73, defensa: 72, velocidad: 85, magia: 75, inteligencia: 66, resistencia: 75, poder: 78 }
+            },
+            {
+                id: 37,
+                nombre: "Yuta Okkotsu - Jujutsu Kaisen",
+                imagen: "img/personajes/jujutsu-kaisen/yuta-okkotsu.jpeg",
+                descripcion: "Yuta Okkotsu es un personaje de Jujutsu Kaisen, conocido por su fuerza y habilidades sobrenaturales. Es un miembro del Círculo de los Catorce, un grupo de estudiantes que luchan contra los yokai.",
+                categoria: "Jujutsu Kaisen",
+                rareza: "Épico",
+                stats: { vida: 91, ataque: 93, defensa: 92, velocidad: 86, magia: 85, inteligencia: 70, resistencia: 86, poder: 90 }
             }
         ];
 
