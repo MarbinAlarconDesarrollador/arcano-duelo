@@ -607,20 +607,20 @@
             text-shadow: 0 0 24px rgba(255, 59, 92, .5);
         }
 
-footer.hint {
-    margin-top: 24px;
-    padding: 10px;
-    text-align: center;
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    /* Efecto "Fade In" lento */
-    animation: fadeIn 2s ease-in;
-    /* Separación sutil */
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    background: linear-gradient(to right, transparent, rgba(255,255,255,0.03), transparent);
-}
+        footer.hint {
+            margin-top: 24px;
+            padding: 10px;
+            text-align: center;
+            font-size: 10px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            /* Efecto "Fade In" lento */
+            animation: fadeIn 2s ease-in;
+            /* Separación sutil */
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.03), transparent);
+        }
 
         footer.hint::before {
             content: "© ";
@@ -661,7 +661,7 @@ footer.hint {
         .card-media {
             position: relative;
             width: 100%;
-            height: 100%;
+            height: 200px; /*100%*/
             border-radius: 10px;
             overflow: hidden;
             margin: 2px 0 8px;
@@ -871,7 +871,7 @@ footer.hint {
 
         @media (min-width:640px) {
             .card {
-                min-height: 270px;
+                min-height: 400px;
             }
         }
     </style>
@@ -1382,7 +1382,7 @@ footer.hint {
             {
                 id: 41,
                 nombre: "Inosuke Hashibira - Demon Slayer",
-                imagen: "img/personajes/kimetsu/inosuke.jpeg",
+                imagen: "img/personajes/kimetsu/inosuke-hashibira.jpeg",
                 descripcion: "Inosuke Hashibira es un personaje de Demon Slayer, conocido por su fuerza y habilidades sobrenaturales. Es un miembro del Círculo de los Catorce, un grupo de estudiantes que luchan contra los yokai.",
                 categoria: "Demon Slayer",
                 rareza: "Épico",
@@ -1856,7 +1856,7 @@ footer.hint {
                 sendState();
                 renderGame();
                 if (game.phase === "gameover") showGameOver();
-            }, 2200);
+            }, 3600);
         }
 
         function chooseStat(stat) {
