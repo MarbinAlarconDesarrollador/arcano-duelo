@@ -1,6 +1,6 @@
 // service-worker.js
-const CACHE_NAME = 'cybercard-v2.02';
-const ASSETS = ['/', '/index.html', '/css/estilos.css', '/css/cartas.css', '/css/resonsive.css', '/img/personajes/black-clover', '/img/personajes/bleach', '/img/personajes/caballeros-del-zodiaco', '/img/personajes/demon-slayer', '/img/personajes/dragon-ball', '/img/personajes/fairy-tail', '/img/personajes/fullmetal-alchemist', '/img/personajes/hunter-x-hunter', '/img/personajes/naruto', '/img/personajes/one-piece', '/img/personajes/solo-leveling', '/img/personajes/spy-x-family', '/img/personajes/jujutsu-kaisen'];
+const CACHE_NAME = 'cybercard-v2.03';
+const ASSETS = ['/', '/index.html', '/css/estilos.css', '/css/cartas.css', '/css/resonsive.css', '/img/personajes/black-clover/asta.jpeg', '/img/personajes/bleach/ichigo-kurosaki.jpeg', '/img/personajes/caballeros-zodiaco/acua.jpeg', '/img/personajes/demon-slayer/genya-shinazugawa.jpeg', '/img/personajes/naruto/naruto.jpeg', '/img/personajes/one-piece/luffy.jpeg', '/img/personajes/solo-leveling/belion.jpeg', '/img/personajes/jujutsu-kaisen/choso.jpeg'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));
